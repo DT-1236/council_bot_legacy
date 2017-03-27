@@ -11,6 +11,7 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import logging
 import Levenshtein
+import member_info
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.CRITICAL)
@@ -47,67 +48,6 @@ class Secret(Poll):
     def results(self):
         tally = (Poll.polls[self.name].votes.values())
         return ("Current Results for secret poll, %s: \n"%(Poll.polls[self.name].name)+"```\n"+"%s\n"*len((Poll.polls[self.name].votes))%tuple([x for x in tally])+"```")
-
-class Record: # Do it offline. You're hitting sharky's site too often. Reg-ex the dates. distance from 'sortfield' actually varies accross entries
-
-    record_list={}
-
-    def __init__(self, user_ign):
-        time_start = time.clock()
-        self.name = user_ign
-        Record.record_list[self.name] = self
-#        time_start=time.clock()
-        with urllib.request.urlopen(r"http://stats.wolfpackpss.com/quickSearch/%s"%(user_ign.replace(' ','%20'))) as response:
-            source = response.read()
-        user_id=re.search(r"\d+", source.decode("utf-8")).group()
-        with urllib.request.urlopen(r'http://stats.wolfpackpss.com/graphDetail/trophy/u-%s'%(user_id)) as response:
-            history = response.read()
-        history=history.decode("utf-8").lower()#lower() is used to rectify formatting issues
-        history=history[history.find(r'{'):] #find the start of the first data set
-        date_start=history.find(r'"sortfield"')+13 #finding information regarding the first date in the first data set
-        x_coord=[history[date_start+3:date_start+14]]
-        print (x_coord)
-        x_coord[0]=x_coord[0].replace(x_coord[0][0:2],calendar[x_coord[0][0:2]])
-        self.x_coord_short = []
-        self.trophies_short = []
-        self.username = user_ign.lower()#lower() to match the case of history
-        name_start = history.find((r'"%s"')%(self.username))+len(self.username)+4
-        trophies = [history[name_start:history.find(r'.')]]
-        while history.find(r'{',1)>0:
-            history = history[history.find(r'{',1):] #find the next set of data
-            trophy = history[name_start:history.find(r'.')]
-            current_time = history[date_start:date_start+14]
-            if trophy != trophies[-1]: #only append new trophy counts
-                trophies.append(trophy)
-                print (current_time)
-                print (current_time[4:8])
-                x_coord.append(current_time[4:8].replace(current_time[4:6],calendar[current_time[4:6]]))
-                if x_coord[-2] != current_time[4:8]: #only append new dates
-                    self.x_coord_short.append(current_time[4:8].replace(current_time[4:6],calendar[current_time[4:6]]))
-                    self.trophies_short.append(trophy)
-#        for x in range(0,len(x_coord)-1):
-#            x_coord[x]=x_coord[x].replace(x_coord[x][0:2],calendar[x_coord[x][0:2]])
-        self.x_coord_long = x_coord
-        self.trophies_long = trophies
-        if len(self.trophies_short)<11:#these blocks will create a list of the last 10 days with unique trophies
-            self.trophies_recent = self.trophies_short
-            self.x_coord_recent = self.x_coord_short
-        else:
-            self.trophies_recent = self.trophies_short[-10:]
-            self.x_coord_recent = self.x_coord_short[-10:]
-        print (('Data prep complete. Time Elapsed :')+str(time.clock()-time_start))
-        print (self.x_coord_short)
-        
-    def recent_plot(self):
-        plt.figure()
-        plt.plot(self.x_coord_recent, self.trophies_recent)
-        plt.xlabel("Dates")
-        plt.ylabel("Trophies")
-        plt.title("Recent Activity - %s"%(self.name))
-        plt.savefig("%s recent.png"%(self.name))
-
-description = '''A Council bot to execute council functions.'''
-bot = commands.Bot(command_prefix='&', description=description)
         
 @bot.event
 async def on_ready():
@@ -116,13 +56,21 @@ async def on_ready():
     print(bot.user.id)
     print('------')
 
-@bot.command(aliases=['Recent'])
-async def recent(ctx,*,request : str=''):
-    if request and request not in Record.record_list:
-        Record.record_list[request] = Record(request)
-    Record.record_list[request].recent_plot()
-    with open('%s recent.png'%Record.record_list[request].name, 'rb') as plot:
-        await bot.send_file(ctx.message.channel, plot)
+@bot.command(aliases=['Activity', 'login', 'Login'])
+async def activity(ctx,*,request : str=''):
+    await ctx.send(member_info.last_login(request))
+
+@bot.command(aliases=['Alliance'])
+async def alliance(ctx,*,request : str=''):
+    await ctx.send(member_info.alliance(request))
+
+@bot.command(aliases=['Cups', 'cups', 'Cup', 'cup', 'Trophy', 'trophy', 'Trophies'])
+async def trophies(ctx,*,request : str=''):
+    await ctx.send(member_info.trophies(request))    
+
+@bot.command(aliases=['Refresh','renew','Renew'])
+async def refresh(ctx,*,request : str=''):
+    await ctx.send(member_info.refresh(request))
 
 @bot.command(aliases=['Polls','Poll','poll'])
 async def polls(ctx,*,request : str=''):
