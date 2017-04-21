@@ -1,6 +1,6 @@
 import urllib
 import time
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt #This is now imported in member_info
 
 #    print (('Data prep complete. Time Elapsed :')+str(time.clock()-time_start))
 
@@ -19,10 +19,9 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-
 #calendar = {'1':'Jan', '2':'Feb', '3':'Mar', '4':'Apr', '5':'May', '6':'June', '7':'July', '8':'August', '9':'Sep', '10':'Oct', '11':'Nov', '12':'Dec'}
 calendar = {'01':' Jan ', '02':' Feb ', '03':' Mar ', '04':' Apr ', '05':' May ', '06':' Jun ', '07':' Jul ', '08':' Aug ', '09':' Sep ', '10':' Oct ', '11':' Nov ', '12':' Dec '}
-    
+
 class Poll:
 
     polls={}#Dictionary of polls. Keys are strings which contain poll.name. Values are the Poll objects themselves which contain a dictionary of voter information
@@ -48,7 +47,12 @@ class Secret(Poll):
     def results(self):
         tally = (Poll.polls[self.name].votes.values())
         return ("Current Results for secret poll, %s: \n"%(Poll.polls[self.name].name)+"```\n"+"%s\n"*len((Poll.polls[self.name].votes))%tuple([x for x in tally])+"```")
-        
+
+def lined_string(text):
+    return "```\n"+"%s\n"*len(text)%tuple(text)+"```\n"
+
+bot = commands.Bot(command_prefix='&')
+
 @bot.event
 async def on_ready():
     print('Logged in as')
@@ -56,20 +60,24 @@ async def on_ready():
     print(bot.user.id)
     print('------')
 
-@bot.command(aliases=['Activity', 'login', 'Login'])
-async def activity(ctx,*,request : str=''):
+@bot.command(aliases=['LastLogin', 'Lastlogin','Last','last','lastLogin', 'login', 'Login'])
+async def lastlogin(ctx,*,request : str=''):
+    """Return last login date for a given user name. May have trouble if the search returns multiple results"""
     await ctx.send(member_info.last_login(request))
 
-@bot.command(aliases=['Alliance'])
-async def alliance(ctx,*,request : str=''):
-    await ctx.send(member_info.alliance(request))
+@bot.command(aliases=['Allegiance'])
+async def allegiance(ctx,*,request : str=''):
+    """Return the alliance to which the requested player currently belongs. May have trouble if the search returns multiple results"""
+    await ctx.send(member_info.allegiance(request))
 
 @bot.command(aliases=['Cups', 'cups', 'Cup', 'cup', 'Trophy', 'trophy', 'Trophies'])
 async def trophies(ctx,*,request : str=''):
-    await ctx.send(member_info.trophies(request))    
+    """Return current trophies. May have trouble if the search returns multiple results"""
+    await ctx.send(member_info.trophies(request))
 
 @bot.command(aliases=['Refresh','renew','Renew'])
 async def refresh(ctx,*,request : str=''):
+    """Refresh data for the member. May have trouble if the search returns multiple results"""
     await ctx.send(member_info.refresh(request))
 
 @bot.command(aliases=['Polls','Poll','poll'])
@@ -139,7 +147,7 @@ async def add(ctx,*,request : str=''):
         return
     if text[1][0]==' ':
         text[1]=text[1][1:]
-    member_check = process.extractOne("%s"%(text[1]),bot.get_all_members()) 
+    member_check = process.extractOne("%s"%(text[1]),bot.get_all_members())
     if member_check[1] > 70:
         member = member_check[0]
     else:
@@ -220,5 +228,56 @@ silence - (poll),(member): Removes (member) from (poll)\n
 """
     await ctx.send(phrase)
     return
+
+@bot.command(aliases=['Complete'])
+async def complete(ctx,*,request : str=''):
+    results = member_info.complete(request)
+    name = results[0]
+    ID = results[1]
+    multi_error = False
+    member_info.os.chdir('plots')
+    try:
+        multi_error = results[2]
+    except:
+        pass
+    if multi_error:
+        await ctx.send("**WARNING: MULTIPLE USERS HAVE HAD THE NAME %s**\nConsider searching with ID instead\nComplete trophy data for %s, ID: %s is as follows:"%(name, name, ID),file=discord.File(fp="%s.png"%name))
+    else:
+        await ctx.send("Complete trophy data for %s, ID: %s is as follows:"%(name, ID),file=discord.File(fp="%s.png"%name))
+    member_info.os.chdir('..')
+    return
+
+@bot.command(aliases=['Alliance'])
+async def alliance(ctx,*,request : str=''):
+    """Returns trophy data over time for an alliance"""
+    results = member_info.alliance(request)
+    alliance = results[0]
+    ID = results[1]
+    member_info.os.chdir('plots')
+    await ctx.send("Alliance trophy data over time for %s, Alliance ID: %s is as follows:"%(alliance, ID),file=discord.File(fp="%s.png"%alliance))
+    member_info.os.chdir('..')
+    return
+
+@bot.command(aliases=['Average', 'AVG', 'avg'])
+async def average(ctx,*,request : str=''):
+    """Returns average member trophy data over time for an alliance"""
+    results = member_info.average(request)
+    alliance = results[0]
+    ID = results[1]
+    member_info.os.chdir('plots')
+    await ctx.send("Average member trophy data over time for %s, Alliance ID: %s is as follows:"%(alliance, ID),file=discord.File(fp="%s.png"%alliance))
+    member_info.os.chdir('..')
+    return
+    
+@bot.command(aliases=['Look', 'look', 'Lookup'])
+async def lookup(ctx,*,request : str=''):
+    """Returns ID numbers for an alliance or a member. Separate alliance or member with a comma before giving the name of an alliance or a member"""
+    request = request.split(',', 2)
+    if request[0] == 'alliance':
+        await ctx.send(lined_string(member_info.alliance_lookup(request[1])))
+        return
+    if request[0] == 'member' or request[0] == 'user':
+        await ctx.send(lined_string(member_info.member_lookup(request[1])))
+        return
 
 bot.run('Mjc3MTkxNjczOTk2NTA5MTg0.C3aKYA.UF2sH6PrBdOxT6znHJAd66_k07Q') #Council bot's token
