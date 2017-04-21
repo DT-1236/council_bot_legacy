@@ -16,8 +16,8 @@ cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=GUNGNIR\DTSQL;DATABASE=PSS') #
 cursor = cnxn.cursor()
 
 cursor.execute('select DISTINCT(Name),MemberID from dbo.[Full Data] order by Name asc')
-names = {}
-memberIDs = {}
+names = {} #Name to MemberID
+memberIDs = {} #MemberID to Name
 for entry in cursor.fetchall():
     names[entry[0]] = entry[1]
     try: #It might be slow, but I'm going to try to catch name changes here
@@ -26,8 +26,8 @@ for entry in cursor.fetchall():
         memberIDs[entry[1]] = entry[0]
 
 cursor.execute('select DISTINCT(AllianceName),AllianceID from dbo.[Full Data]')
-alliances = {}
-allianceIDs = {}
+alliances = {} #AllianceName to AllianceID
+allianceIDs = {} #AllianceID to AllianceName
 for entry in cursor.fetchall():
     alliances[entry[0]] = entry[1]
     allianceIDs[entry[1]] = entry[0]
@@ -56,13 +56,15 @@ def date_object(raw):
         day = int(raw[8:10])
     return datetime.date(year, month, day)
 
-def date_graph(xcoord, ycoord, filename):
+def date_graph(names, axes):
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m/%d'))
     plt.gca().xaxis.set_major_locator(mdates.DayLocator())
-    plt.plot(xcoord,ycoord)
+    for x in range(0, len(names)):
+        plt.plot(axes[x][0], axes[x][1], label = names[x])
+    plt.legend(loc=0)
     plt.gcf().autofmt_xdate()
     os.chdir('plots')
-    plt.savefig(u"%s.png"%filename)
+    plt.savefig("plot.png")
     plt.close()
     os.chdir('..')
 
@@ -211,63 +213,77 @@ def database():
     print ('database operation complete')
     print ('Full prep complete. Time Elapsed :'+str(time.clock()-time_start))
 
-def complete(ID):
-    try:
-        int(ID)
-    except:
-        similarity_check = process.extract(ID, names, scorer = fuzz.token_set_ratio)
-        if similarity_check[0][1] == similarity_check[1][1]: #This will weight entries which contain the complete query. e.g. Zakidos will be higher than Little Zakidos when searching just Zakidos
-            similarity_check = process.extract(ID, names, scorer = fuzz.token_sort_ratio)
-        name = similarity_check[0][0]
-        cursor.execute("select MemberID from dbo.[Full Data] where Name = '%s'"%name)
-        ID_list = list(set([x[0] for x in cursor.fetchall()]))
-        if len(ID_list) > 1:
-            multi_error = True
-            print("More than 1 user has had this name. Consider searching by ID number")
-        ID = ID_list[0]
-    cursor.execute("select Date,TrophyCount,Name from PSS.dbo.[Full Data] where MemberID = %s order by Date asc"%ID)
-    query = cursor.fetchall()
-    xcoord = [datetime.datetime.strptime(x[0], '%Y-%m-%d') for x in query]
-    ycoord = [x[1] for x in query]
-    date_graph(xcoord, ycoord, query[0][2])
-    try:
-        return (name, ID, multi_error)
-    except:
-        return (name, ID)
+def complete(request):
+    request = multi_input('member', request)
+    results = [request[1],[]]
+    for entry in request[0]:
+        cursor.execute("select Date,TrophyCount,Name from PSS.dbo.[Full Data] where MemberID = %s order by Date asc"%entry)
+        query = cursor.fetchall()
+        xcoord = [datetime.datetime.strptime(x[0], '%Y-%m-%d') for x in query]
+        ycoord = [x[1] for x in query]
+        results[1].append([xcoord, ycoord])
+    date_graph(results[0], results[1])
+    return (results[0],request[0])
 
-def alliance(ID):
-    try:
-        int(ID)
-        alliance = allianceIDs[ID]
-    except:
-        similarity_check = process.extract(ID, alliances.keys(), scorer = fuzz.token_set_ratio)
-        if similarity_check[0][1] == similarity_check[1][1]: #This will weight entries which contain the complete query. e.g. Zakidos will be higher than Little Zakidos when searching just Zakidos
-            similarity_check = process.extract(ID, alliances.keys(), scorer = fuzz.ratio, processor = lambda x:x)
-        alliance = similarity_check[0][0]
-        ID = alliances[alliance]
-    cursor.execute("select Date,sum(TrophyCount) from dbo.[Full Data] where AllianceID = %s GROUP BY Date order by Date asc"%ID)
-    query = cursor.fetchall()
-    xcoord = [datetime.datetime.strptime(x[0], '%Y-%m-%d') for x in query]
-    ycoord = [x[1] for x in query]
-    date_graph(xcoord, ycoord, alliance)
-    return (alliance, ID)
+def alliance(request):
+    request = multi_input('alliance', request)
+    results = [request[1],[]]
+    for entry in request[0]:
+        cursor.execute("select Date,sum(TrophyCount) from dbo.[Full Data] where AllianceID = %s GROUP BY Date order by Date asc"%entry)
+        query = cursor.fetchall()
+        xcoord = [datetime.datetime.strptime(x[0], '%Y-%m-%d') for x in query]
+        ycoord = [x[1] for x in query]
+        results[1].append([xcoord, ycoord])
+    date_graph(results[0], results[1])
+    return (results[0],request[0])
 
-def average(ID):
+def multi_input(scope, interim):
+    interim = interim.split(',')
+    request = []
+    if scope == 'alliance':
+        source = alliances
+        sourceID = allianceIDs
+    if scope == 'member':
+        source = names
+        sourceID = memberIDs
+    for entry in interim:
+        try:
+            int(entry)
+            request.append(int(entry))
+        except:
+            similarity_check = process.extract(entry, source.keys(), scorer = fuzz.token_set_ratio)
+            if similarity_check[0][1] == similarity_check[1][1]: #This will weight entries which contain the complete query. e.g. Zakidos will be higher than Little Zakidos when searching just Zakidos
+                similarity_check = process.extract(entry, source.keys(), scorer = fuzz.ratio, processor = lambda x:x)
+            entry = similarity_check[0][0]
+            request.append(source[entry])
+    request_names = [sourceID[x] for x in request]
+    return request, request_names
+
+def average(request):
+    request = multi_input('alliance', request)
+    results = [request[1],[]]
+    for entry in request[0]:
+        cursor.execute("select Date,AVG(TrophyCount) from dbo.[Full Data] where AllianceID = %s GROUP BY Date order by Date asc"%entry)
+        query = cursor.fetchall()
+        xcoord = [datetime.datetime.strptime(x[0], '%Y-%m-%d') for x in query]
+        ycoord = [x[1] for x in query]
+        results[1].append([xcoord, ycoord])
+    date_graph(results[0], results[1])
+    return (results[0],request[0])
+
+def history(ID):
     try:
         int(ID)
-        alliance = allianceIDs[ID]
     except:
-        similarity_check = process.extract(ID, alliances.keys(), scorer = fuzz.token_set_ratio)
-        if similarity_check[0][1] == similarity_check[1][1]: #This will weight entries which contain the complete query. e.g. Zakidos will be higher than Little Zakidos when searching just Zakidos
-            similarity_check = process.extract(ID, alliances.keys(), scorer = fuzz.ratio, processor = lambda x:x)
-        alliance = similarity_check[0][0]
-        ID = alliances[alliance]
-    cursor.execute("select Date,AVG(TrophyCount) from dbo.[Full Data] where AllianceID = %s GROUP BY Date order by Date asc"%ID)
-    query = cursor.fetchall()
-    xcoord = [datetime.datetime.strptime(x[0], '%Y-%m-%d') for x in query]
-    ycoord = [x[1] for x in query]
-    date_graph(xcoord, ycoord, alliance)
-    return (alliance, ID)
+        ID = member_lookup(ID)[0][1]
+    cursor.execute("select Date,AllianceName,AllianceID from dbo.[Full Data] where MemberID = '%s' order by Date asc"%ID)
+    history = cursor.fetchall()
+    results = [('Date', 'Alliance Name', 'Alliance ID')]
+    results.append(history[0])
+    for entry in history:
+        if entry[-1] != results[-1][-1]:
+            results.append(entry)
+    return (results, ID)
 
 def alliance_lookup(name):
     return [(x[0], alliances[x[0]])for x in process.extract(name, alliances.keys(), scorer = fuzz.token_set_ratio)]

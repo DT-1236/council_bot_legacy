@@ -232,41 +232,37 @@ silence - (poll),(member): Removes (member) from (poll)\n
 @bot.command(aliases=['Complete'])
 async def complete(ctx,*,request : str=''):
     results = member_info.complete(request)
-    name = results[0]
-    ID = results[1]
-    multi_error = False
     member_info.os.chdir('plots')
-    try:
-        multi_error = results[2]
-    except:
-        pass
-    if multi_error:
-        await ctx.send("**WARNING: MULTIPLE USERS HAVE HAD THE NAME %s**\nConsider searching with ID instead\nComplete trophy data for %s, ID: %s is as follows:"%(name, name, ID),file=discord.File(fp="%s.png"%name))
-    else:
-        await ctx.send("Complete trophy data for %s, ID: %s is as follows:"%(name, ID),file=discord.File(fp="%s.png"%name))
+    result = [x for x in zip(results[0],results[1])]
+    await ctx.send("Complete trophy data. Name and IDs:"+lined_string(result), file=discord.File(fp="plot.png"))
     member_info.os.chdir('..')
     return
 
-@bot.command(aliases=['Alliance'])
+@bot.command(aliases=['Alliance', 'Alliances', 'alliances'])
 async def alliance(ctx,*,request : str=''):
     """Returns trophy data over time for an alliance"""
     results = member_info.alliance(request)
-    alliance = results[0]
-    ID = results[1]
     member_info.os.chdir('plots')
-    await ctx.send("Alliance trophy data over time for %s, Alliance ID: %s is as follows:"%(alliance, ID),file=discord.File(fp="%s.png"%alliance))
+    result = [x for x in zip(results[0],results[1])]
+    await ctx.send("Alliance trophy data over time. Alliance names and IDs:"+lined_string(result), file=discord.File(fp="plot.png"))
     member_info.os.chdir('..')
     return
 
-@bot.command(aliases=['Average', 'AVG', 'avg'])
+@bot.command(aliases=['Average', 'Averages', 'averages', 'AVG', 'avg'])
 async def average(ctx,*,request : str=''):
     """Returns average member trophy data over time for an alliance"""
     results = member_info.average(request)
-    alliance = results[0]
-    ID = results[1]
     member_info.os.chdir('plots')
-    await ctx.send("Average member trophy data over time for %s, Alliance ID: %s is as follows:"%(alliance, ID),file=discord.File(fp="%s.png"%alliance))
+    result = [x for x in zip(results[0],results[1])]
+    await ctx.send("Average member trophy data over time. Alliance names and IDs:"+lined_string(result), file=discord.File(fp="plot.png"))
     member_info.os.chdir('..')
+    return
+
+@bot.command(aliases=['History', 'hist', 'Hist'])
+async def history(ctx,*,request : str=''):
+    """Returns the alliance history for a player"""
+    results = member_info.history(request)
+    await ctx.send("Alliance history for Player: %s, MemberID: %s is as follows:\n"%(member_info.memberIDs[results[1]], results[1])+lined_string(results[0]))
     return
     
 @bot.command(aliases=['Look', 'look', 'Lookup'])
