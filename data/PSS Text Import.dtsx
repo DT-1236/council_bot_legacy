@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="4/10/2017 4:51:46 PM"
@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="Package"
   DTS:PackageType="5"
-  DTS:VersionBuild="6"
-  DTS:VersionGUID="{801679A5-7E5A-4E3C-9C3D-0FDAF2438E5F}">
+  DTS:VersionBuild="10"
+  DTS:VersionGUID="{496ADD46-29AB-4E9A-B47A-40E5F844BB7B}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -46,19 +46,19 @@
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
               DTS:ColumnDelimiter="_x0026__x0040__x0026_"
-              DTS:DataType="133"
+              DTS:DataType="7"
               DTS:TextQualified="True"
               DTS:ObjectName="Date"
-              DTS:DTSID="{E127883A-D884-4C18-8506-6FC2E6742E86}"
+              DTS:DTSID="{51B67129-34BE-466D-91FA-A2E37E11A228}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
               DTS:ColumnDelimiter="_x0026__x0040__x0026_"
-              DTS:MaximumWidth="50"
+              DTS:MaximumWidth="120"
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="Name"
-              DTS:DTSID="{C01F472D-E629-4F08-8A69-4BB63527ADAC}"
+              DTS:DTSID="{BEA7813B-84C5-4E18-8B25-950D010DBDBC}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -66,7 +66,7 @@
               DTS:DataType="20"
               DTS:TextQualified="True"
               DTS:ObjectName="MemberID"
-              DTS:DTSID="{B74ABFAC-5754-4374-B1DB-2CB29420D947}"
+              DTS:DTSID="{6A04E022-6670-453C-8282-E94B6561D7F6}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -75,7 +75,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="UserType"
-              DTS:DTSID="{EB2557DD-9C05-4503-AE68-0E9E92804FA0}"
+              DTS:DTSID="{EEBB5ACC-D78D-425A-89BF-A578DC91B12F}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -83,16 +83,16 @@
               DTS:DataType="20"
               DTS:TextQualified="True"
               DTS:ObjectName="TrophyCount"
-              DTS:DTSID="{E95603E6-48EF-4BB9-9068-7FA7937A8DC6}"
+              DTS:DTSID="{98740816-733E-4459-9C88-E4CB7331C051}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
               DTS:ColumnDelimiter="_x0026__x0040__x0026_"
-              DTS:MaximumWidth="50"
+              DTS:MaximumWidth="98"
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="AllianceName"
-              DTS:DTSID="{46F9E887-7C80-47F6-8FF1-52374B17F918}"
+              DTS:DTSID="{B3FB58EA-4FA3-4F85-8E58-0A89CDD4B6AE}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -100,7 +100,7 @@
               DTS:DataType="20"
               DTS:TextQualified="True"
               DTS:ObjectName="AllianceID"
-              DTS:DTSID="{0E8E11E7-6ACE-4683-8AE3-A04FA09317DE}"
+              DTS:DTSID="{823B55F4-7EBB-4273-A5E4-BC58D00FEC07}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -109,15 +109,15 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="AllianceRank"
-              DTS:DTSID="{8BBD04AF-4278-4F23-AF0B-57D71070A4B5}"
+              DTS:DTSID="{3544E04F-0572-49D9-9A0D-3E1A74E03A55}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
               DTS:ColumnDelimiter="_x0025__x007C__x0025_"
-              DTS:DataType="133"
+              DTS:DataType="7"
               DTS:TextQualified="True"
               DTS:ObjectName="LastLogin"
-              DTS:DTSID="{72AD8690-F95A-4C30-9D18-BCDE3CBCD8EE}"
+              DTS:DTSID="{1F54F2B1-A41D-4E95-8628-0C58ED8D29DC}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -173,7 +173,7 @@
                   <outputColumns>
                     <outputColumn
                       refId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].Columns[Date]"
-                      dataType="dbDate"
+                      dataType="date"
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="RedirectRow"
                       externalMetadataColumnId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[Date]"
@@ -197,7 +197,7 @@
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="RedirectRow"
                       externalMetadataColumnId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[Name]"
-                      length="50"
+                      length="120"
                       lineageId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].Columns[Name]"
                       name="Name"
                       truncationRowDisposition="RedirectRow">
@@ -279,7 +279,7 @@
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="RedirectRow"
                       externalMetadataColumnId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[AllianceName]"
-                      length="50"
+                      length="98"
                       lineageId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].Columns[AllianceName]"
                       name="AllianceName"
                       truncationRowDisposition="RedirectRow">
@@ -337,7 +337,7 @@
                     </outputColumn>
                     <outputColumn
                       refId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].Columns[LastLogin]"
-                      dataType="dbDate"
+                      dataType="date"
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="RedirectRow"
                       externalMetadataColumnId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[LastLogin]"
@@ -360,12 +360,12 @@
                     isUsed="True">
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[Date]"
-                      dataType="dbDate"
+                      dataType="date"
                       name="Date" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[Name]"
                       dataType="wstr"
-                      length="50"
+                      length="120"
                       name="Name" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[MemberID]"
@@ -383,7 +383,7 @@
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[AllianceName]"
                       dataType="wstr"
-                      length="50"
+                      length="98"
                       name="AllianceName" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[AllianceID]"
@@ -396,7 +396,7 @@
                       name="AllianceRank" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[LastLogin]"
-                      dataType="dbDate"
+                      dataType="date"
                       name="LastLogin" />
                   </externalMetadataColumns>
                 </output>
@@ -527,7 +527,7 @@ where [refTable].[Date] = ? and [refTable].[MemberID] = ?</property>
                     </inputColumn>
                     <inputColumn
                       refId="Package\Data Flow Task\Lookup Existing combinations of Date and MemberID.Inputs[Lookup Input].Columns[Date]"
-                      cachedDataType="dbDate"
+                      cachedDataType="date"
                       cachedName="Date"
                       cachedSortKeyPosition="1"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[Date]">
@@ -699,7 +699,7 @@ where [refTable].[Date] = ?</property>
                   <inputColumns>
                     <inputColumn
                       refId="Package\Data Flow Task\Lookup Existing Dates.Inputs[Lookup Input].Columns[Date]"
-                      cachedDataType="dbDate"
+                      cachedDataType="date"
                       cachedName="Date"
                       cachedSortKeyPosition="1"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[Date]">
@@ -948,7 +948,7 @@ where [refTable].[MemberID] = ?</property>
                 <property
                   dataType="System.String"
                   description="Specifies the name of the database object used to open a rowset."
-                  name="OpenRowset">[dbo].[Full Data]</property>
+                  name="OpenRowset">[dbo].[Test Data]</property>
                 <property
                   dataType="System.String"
                   description="Specifies the variable that contains the name of the database object used to open a rowset."
@@ -1006,7 +1006,7 @@ where [refTable].[MemberID] = ?</property>
                   <inputColumns>
                     <inputColumn
                       refId="Package\Data Flow Task\Output new dataset to Full Data.Inputs[OLE DB Destination Input].Columns[Date]"
-                      cachedDataType="dbDate"
+                      cachedDataType="date"
                       cachedName="Date"
                       cachedSortKeyPosition="1"
                       externalMetadataColumnId="Package\Data Flow Task\Output new dataset to Full Data.Inputs[OLE DB Destination Input].ExternalColumns[Date]"
@@ -1014,7 +1014,7 @@ where [refTable].[MemberID] = ?</property>
                     <inputColumn
                       refId="Package\Data Flow Task\Output new dataset to Full Data.Inputs[OLE DB Destination Input].Columns[Name]"
                       cachedDataType="wstr"
-                      cachedLength="50"
+                      cachedLength="120"
                       cachedName="Name"
                       externalMetadataColumnId="Package\Data Flow Task\Output new dataset to Full Data.Inputs[OLE DB Destination Input].ExternalColumns[Name]"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[Name]" />
@@ -1041,7 +1041,7 @@ where [refTable].[MemberID] = ?</property>
                     <inputColumn
                       refId="Package\Data Flow Task\Output new dataset to Full Data.Inputs[OLE DB Destination Input].Columns[AllianceName]"
                       cachedDataType="wstr"
-                      cachedLength="50"
+                      cachedLength="98"
                       cachedName="AllianceName"
                       externalMetadataColumnId="Package\Data Flow Task\Output new dataset to Full Data.Inputs[OLE DB Destination Input].ExternalColumns[AllianceName]"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[AllianceName]" />
@@ -1060,7 +1060,7 @@ where [refTable].[MemberID] = ?</property>
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[AllianceRank]" />
                     <inputColumn
                       refId="Package\Data Flow Task\Output new dataset to Full Data.Inputs[OLE DB Destination Input].Columns[LastLogin]"
-                      cachedDataType="dbDate"
+                      cachedDataType="date"
                       cachedName="LastLogin"
                       externalMetadataColumnId="Package\Data Flow Task\Output new dataset to Full Data.Inputs[OLE DB Destination Input].ExternalColumns[LastLogin]"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[LastLogin]" />
@@ -1151,7 +1151,7 @@ where [refTable].[MemberID] = ?</property>
                 <property
                   dataType="System.String"
                   description="Specifies the name of the database object used to open a rowset."
-                  name="OpenRowset">[dbo].[Full Data]</property>
+                  name="OpenRowset">[dbo].[Test Data]</property>
                 <property
                   dataType="System.String"
                   description="Specifies the variable that contains the name of the database object used to open a rowset."
@@ -1210,7 +1210,7 @@ where [refTable].[MemberID] = ?</property>
                     <inputColumn
                       refId="Package\Data Flow Task\Output new MemberID and Date entry to Full Data.Inputs[OLE DB Destination Input].Columns[Name]"
                       cachedDataType="wstr"
-                      cachedLength="50"
+                      cachedLength="120"
                       cachedName="Name"
                       externalMetadataColumnId="Package\Data Flow Task\Output new MemberID and Date entry to Full Data.Inputs[OLE DB Destination Input].ExternalColumns[Name]"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[Name]" />
@@ -1231,7 +1231,7 @@ where [refTable].[MemberID] = ?</property>
                     <inputColumn
                       refId="Package\Data Flow Task\Output new MemberID and Date entry to Full Data.Inputs[OLE DB Destination Input].Columns[AllianceName]"
                       cachedDataType="wstr"
-                      cachedLength="50"
+                      cachedLength="98"
                       cachedName="AllianceName"
                       externalMetadataColumnId="Package\Data Flow Task\Output new MemberID and Date entry to Full Data.Inputs[OLE DB Destination Input].ExternalColumns[AllianceName]"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[AllianceName]" />
@@ -1250,13 +1250,13 @@ where [refTable].[MemberID] = ?</property>
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[AllianceRank]" />
                     <inputColumn
                       refId="Package\Data Flow Task\Output new MemberID and Date entry to Full Data.Inputs[OLE DB Destination Input].Columns[LastLogin]"
-                      cachedDataType="dbDate"
+                      cachedDataType="date"
                       cachedName="LastLogin"
                       externalMetadataColumnId="Package\Data Flow Task\Output new MemberID and Date entry to Full Data.Inputs[OLE DB Destination Input].ExternalColumns[LastLogin]"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[LastLogin]" />
                     <inputColumn
                       refId="Package\Data Flow Task\Output new MemberID and Date entry to Full Data.Inputs[OLE DB Destination Input].Columns[Date]"
-                      cachedDataType="dbDate"
+                      cachedDataType="date"
                       cachedName="Date"
                       cachedSortKeyPosition="1"
                       externalMetadataColumnId="Package\Data Flow Task\Output new MemberID and Date entry to Full Data.Inputs[OLE DB Destination Input].ExternalColumns[Date]"
@@ -1354,7 +1354,7 @@ where [refTable].[MemberID] = ?</property>
                 <property
                   dataType="System.String"
                   description="Specifies the name of the database object used to open a rowset."
-                  name="OpenRowset">[dbo].[Full Data]</property>
+                  name="OpenRowset">[dbo].[Test Data]</property>
                 <property
                   dataType="System.String"
                   description="Specifies the variable that contains the name of the database object used to open a rowset."
@@ -1413,7 +1413,7 @@ where [refTable].[MemberID] = ?</property>
                     <inputColumn
                       refId="Package\Data Flow Task\Output new MemberID to Full Data.Inputs[OLE DB Destination Input].Columns[Name]"
                       cachedDataType="wstr"
-                      cachedLength="50"
+                      cachedLength="120"
                       cachedName="Name"
                       externalMetadataColumnId="Package\Data Flow Task\Output new MemberID to Full Data.Inputs[OLE DB Destination Input].ExternalColumns[Name]"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[Name]" />
@@ -1440,7 +1440,7 @@ where [refTable].[MemberID] = ?</property>
                     <inputColumn
                       refId="Package\Data Flow Task\Output new MemberID to Full Data.Inputs[OLE DB Destination Input].Columns[AllianceName]"
                       cachedDataType="wstr"
-                      cachedLength="50"
+                      cachedLength="98"
                       cachedName="AllianceName"
                       externalMetadataColumnId="Package\Data Flow Task\Output new MemberID to Full Data.Inputs[OLE DB Destination Input].ExternalColumns[AllianceName]"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[AllianceName]" />
@@ -1459,13 +1459,13 @@ where [refTable].[MemberID] = ?</property>
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[AllianceRank]" />
                     <inputColumn
                       refId="Package\Data Flow Task\Output new MemberID to Full Data.Inputs[OLE DB Destination Input].Columns[LastLogin]"
-                      cachedDataType="dbDate"
+                      cachedDataType="date"
                       cachedName="LastLogin"
                       externalMetadataColumnId="Package\Data Flow Task\Output new MemberID to Full Data.Inputs[OLE DB Destination Input].ExternalColumns[LastLogin]"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[LastLogin]" />
                     <inputColumn
                       refId="Package\Data Flow Task\Output new MemberID to Full Data.Inputs[OLE DB Destination Input].Columns[Date]"
-                      cachedDataType="dbDate"
+                      cachedDataType="date"
                       cachedName="Date"
                       cachedSortKeyPosition="1"
                       externalMetadataColumnId="Package\Data Flow Task\Output new MemberID to Full Data.Inputs[OLE DB Destination Input].ExternalColumns[Date]"
@@ -1566,7 +1566,7 @@ where [refTable].[MemberID] = ?</property>
                   <inputColumns>
                     <inputColumn
                       refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[Date]"
-                      cachedDataType="dbDate"
+                      cachedDataType="date"
                       cachedName="Date"
                       lineageId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].Columns[Date]">
                       <properties>
@@ -1583,7 +1583,7 @@ where [refTable].[MemberID] = ?</property>
                     <inputColumn
                       refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[Name]"
                       cachedDataType="wstr"
-                      cachedLength="50"
+                      cachedLength="120"
                       cachedName="Name"
                       lineageId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].Columns[Name]">
                       <properties>
@@ -1649,7 +1649,7 @@ where [refTable].[MemberID] = ?</property>
                     <inputColumn
                       refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[AllianceName]"
                       cachedDataType="wstr"
-                      cachedLength="50"
+                      cachedLength="98"
                       cachedName="AllianceName"
                       lineageId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].Columns[AllianceName]">
                       <properties>
@@ -1698,7 +1698,7 @@ where [refTable].[MemberID] = ?</property>
                     </inputColumn>
                     <inputColumn
                       refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[LastLogin]"
-                      cachedDataType="dbDate"
+                      cachedDataType="date"
                       cachedName="LastLogin"
                       lineageId="Package\Data Flow Task\Flat File Source.Outputs[Flat File Source Output].Columns[LastLogin]">
                       <properties>
@@ -1724,7 +1724,7 @@ where [refTable].[MemberID] = ?</property>
                   <outputColumns>
                     <outputColumn
                       refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[Date]"
-                      dataType="dbDate"
+                      dataType="date"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[Date]"
                       name="Date"
                       sortKeyPosition="1">
@@ -1739,7 +1739,7 @@ where [refTable].[MemberID] = ?</property>
                     <outputColumn
                       refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[Name]"
                       dataType="wstr"
-                      length="50"
+                      length="120"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[Name]"
                       name="Name">
                       <properties>
@@ -1794,7 +1794,7 @@ where [refTable].[MemberID] = ?</property>
                     <outputColumn
                       refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[AllianceName]"
                       dataType="wstr"
-                      length="50"
+                      length="98"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[AllianceName]"
                       name="AllianceName">
                       <properties>
@@ -1834,7 +1834,7 @@ where [refTable].[MemberID] = ?</property>
                     </outputColumn>
                     <outputColumn
                       refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[LastLogin]"
-                      dataType="dbDate"
+                      dataType="date"
                       lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[LastLogin]"
                       name="LastLogin">
                       <properties>
@@ -1979,9 +1979,7 @@ where [refTable].[MemberID] = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -2189,9 +2187,7 @@ where [refTable].[MemberID] = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
