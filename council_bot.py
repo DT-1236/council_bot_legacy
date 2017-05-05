@@ -1,9 +1,5 @@
+import datetime
 import urllib
-import time
-#import matplotlib.pyplot as plt #This is now imported in member_info
-
-#    print (('Data prep complete. Time Elapsed :')+str(time.clock()-time_start))
-
 import re
 import discord
 from discord.ext import commands
@@ -19,7 +15,6 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-#calendar = {'1':'Jan', '2':'Feb', '3':'Mar', '4':'Apr', '5':'May', '6':'June', '7':'July', '8':'August', '9':'Sep', '10':'Oct', '11':'Nov', '12':'Dec'}
 calendar = {'01':' Jan ', '02':' Feb ', '03':' Mar ', '04':' Apr ', '05':' May ', '06':' Jun ', '07':' Jul ', '08':' Aug ', '09':' Sep ', '10':' Oct ', '11':' Nov ', '12':' Dec '}
 
 class Poll:
@@ -231,6 +226,7 @@ silence - (poll),(member): Removes (member) from (poll)\n
 
 @bot.command(aliases=['Complete'])
 async def complete(ctx,*,request : str=''):
+    """Returns complete trophy data over time for a player"""
     results = member_info.complete(request)
     member_info.os.chdir('plots')
     result = [x for x in zip(results[0],results[1])]
@@ -262,9 +258,9 @@ async def average(ctx,*,request : str=''):
 async def history(ctx,*,request : str=''):
     """Returns the alliance history for a player"""
     results = member_info.history(request)
-    await ctx.send("Alliance history for Player: %s, MemberID: %s is as follows:\n"%(member_info.memberIDs[results[1]], results[1])+lined_string(results[0]))
+    await ctx.send("Alliance history for Player: %s, MemberID: %s is as follows:\n"%(member_info.memberIDs[int(results[1])], results[1])+lined_string(results[0]))
     return
-    
+
 @bot.command(aliases=['Look', 'look', 'Lookup'])
 async def lookup(ctx,*,request : str=''):
     """Returns ID numbers for an alliance or a member. Separate alliance or member with a comma before giving the name of an alliance or a member"""
@@ -274,6 +270,51 @@ async def lookup(ctx,*,request : str=''):
         return
     if request[0] == 'member' or request[0] == 'user':
         await ctx.send(lined_string(member_info.member_lookup(request[1])))
+        return
+
+@bot.command(aliases=['Token'])
+async def token(ctx,*,request : str=''):
+    """Refreshes the token. The full url is valid"""
+    results = member_info.token_refresh()
+    member_info.token,member_info.server = results[0],results[1]
+    await ctx.send("Token set to %s"%results[0])
+    return
+
+@bot.command(aliases=['Data', 'data', 'Database'])
+async def database(ctx,*,request : str=''):
+    """Collects Trophy data for all members in all top 100 alliances"""
+    try:
+        await ctx.send("Attemping database function. Council bot functions will be unavailable for approximately 2-5 minutes.")
+        member_info.database()
+        await ctx.send("Database operation complete. Contact DT-1236 to ensure import into SQL server.")
+    except:
+        await ctx.send("Database operation unsuccessful. Token is likely invalid. Update with &token")
+
+@bot.command(aliases=['Inactives', 'inactives', 'Inactive'])
+async def inactive(ctx,*,request : int=''):
+    """Posts a .txt file containing a list of all members and their last login per ShipService"""
+    try:
+        await ctx.send("Operation attempted. Bot function will be unavailable for approximately 2-5 minutes")
+        member_info.inactives(request)
+        member_info.os.chdir('lists')
+        await ctx.send("Last Login data for %s is in this .txt"%member_info.allianceIDs[request], file=discord.File(fp='%s - %s Inactives.txt'%(str(datetime.date.today()),member_info.allianceIDs[request])))
+        member_info.os.chdir('..')
+        return
+    except:
+        await ctx.send("Something wrong happened. This function only works with Alliance IDs. Find some with ```&lookup alliance, [alliance name]``` Alternatively, the token could be wrong. Reset it with ```&token [string]```")
+
+@bot.command(aliases=['Recipient', 'Receive', 'receive'])
+async def recipient(ctx,*,request : str=''):
+    """Returns the recipients for donated crew"""
+    owner = member_info.member_lookup(request)[0]
+    request = owner[1]
+    try:
+        await ctx.send("Operation attempted. Searching for crew donated by: %s. Functions will be unavailable for approximately 1-5 minutes"%owner[0])
+        results = member_info.recipient(request)
+        await ctx.send("Crew given by %s: %s were received by"%(owner[0],request)+lined_string(results))
+        return
+    except:
+        await ctx.send("Operation failed. Try a token refresh with &token or confirming ID with &lookup member")
         return
 
 bot.run('Mjc3MTkxNjczOTk2NTA5MTg0.C3aKYA.UF2sH6PrBdOxT6znHJAd66_k07Q') #Council bot's token
